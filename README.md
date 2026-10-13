@@ -39,6 +39,7 @@ the folded-ternary path above is 12.8-13.9x faster at the same quality.
 
 | File | What it does |
 |---|---|
+| `peht_packer.py` | lossless repack TQ2_0 -> TQ1_0 (GGML's base-3 container, 5 trits per byte): identical weights bit-for-bit, ~18% smaller file, output runs on stock llama.cpp |
 | `convert_pq2_folded_to_tq2.py` | the main converter: PQ2_0 -> TQ2_0 keeping the weights folded and the `prism.hadamard.*` keys |
 | `verify_folded.py` | byte-exact verification of a converted file (re-encodes source rows and compares bytes), plus round-trip error |
 | `check_distribution.py` | prints folded code distribution and the primal Gaussian signature of a model |
@@ -46,7 +47,7 @@ the folded-ternary path above is 12.8-13.9x faster at the same quality.
 | `convert_pq2_0_to_tq2_0.py` | shared GGUF codec plus the earlier (rejected) primal-basis converter, kept for the record |
 | `verify_convert.py` | legacy verifier for the earlier path, kept for the record |
 
-Requirements: Python 3.9+ and numpy.
+Requirements: Python 3.9+ and numpy (tqdm optional — `peht_packer.py` falls back to plain progress output).
 
 ## Quick start
 
@@ -59,6 +60,9 @@ python verify_folded.py src-pq2_0.gguf out-tq2-folded.gguf blk.0.ffn_down.weight
 
 # inspect the folded/primal distributions
 python check_distribution.py Ternary-Bonsai-2-27B-PQ2_0.gguf
+
+# optional: repack the result into GGML's base-3 container (lossless, ~18% smaller)
+python peht_packer.py out-tq2-folded.gguf out-tq1-folded.gguf --verify
 ```
 
 The result runs on any runtime with the Hadamard transform (our PEHT runtime patch for
