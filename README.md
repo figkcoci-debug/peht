@@ -19,8 +19,10 @@ the runtime applies the rotation to activations on the fly.
 
 ## What we did
 
-1. **Lossless requantization** of the folded ternary from PQ2_0 to TQ2_0, keeping the rotation
-   keys: **perplexity 14.2573 vs the 14.0477 reference (+1.5%)**, round-trip correlation 0.9985+.
+1. **Requantization** of the folded ternary from PQ2_0 to TQ2_0, keeping the rotation keys
+   (the vendor's 128-wide scale groups become GGML's 256-wide TQ2_0 blocks — this scale merge
+   is the only approximation in the pipeline): **perplexity 14.2573 vs the 14.0477 reference
+   (+1.5%)**, round-trip correlation 0.9985+.
 2. **A runtime patch** for llama.cpp / llama.rn that parses `prism.hadamard.*` from the GGUF and
    applies the Hadamard rotation inside the graph (the same patch powers our Android app).
 
@@ -39,7 +41,7 @@ the folded-ternary path above is 12.8-13.9x faster at the same quality.
 
 | File | What it does |
 |---|---|
-| `peht_packer.py` | lossless repack TQ2_0 -> TQ1_0 (GGML's base-3 container, 5 trits per byte): identical weights bit-for-bit, ~18% smaller file, output runs on stock llama.cpp |
+| `peht_packer.py` | lossless repack TQ2_0 -> TQ1_0 (GGML's base-3 container, 5 trits per byte): identical weights bit-for-bit — trits and fp16 scales untouched, only the packing changes; ~18% smaller file; `--verify` proves sampled rows byte-exact. The container is stock GGML type 34 (loads on stock builds, unlike the vendor's 142/143); correct output on this folded model still needs a Hadamard-aware runtime |
 | `convert_pq2_folded_to_tq2.py` | the main converter: PQ2_0 -> TQ2_0 keeping the weights folded and the `prism.hadamard.*` keys |
 | `verify_folded.py` | byte-exact verification of a converted file (re-encodes source rows and compares bytes), plus round-trip error |
 | `check_distribution.py` | prints folded code distribution and the primal Gaussian signature of a model |
