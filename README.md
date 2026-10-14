@@ -51,6 +51,8 @@ the folded-ternary path above is 12.8-13.9x faster at the same quality.
 
 Requirements: Python 3.9+ and numpy (tqdm optional — `peht_packer.py` falls back to plain progress output).
 
+Deep dive — **how the TQ2_0 → TQ1_0 repack works, bit by bit**: [HOW-THE-REPACK-WORKS.md](HOW-THE-REPACK-WORKS.md) (both block layouts, the base-3 byte trick with a worked example, and the three verification layers).
+
 ## Quick start
 
 ```bash
