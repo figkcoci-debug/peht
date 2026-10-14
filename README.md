@@ -45,6 +45,7 @@ the folded-ternary path above is 12.8-13.9x faster at the same quality.
 | `convert_pq2_folded_to_tq2.py` | the main converter: PQ2_0 -> TQ2_0 keeping the weights folded and the `prism.hadamard.*` keys |
 | `verify_folded.py` | byte-exact verification of a converted file (re-encodes source rows and compares bytes), plus round-trip error |
 | `check_distribution.py` | prints folded code distribution and the primal Gaussian signature of a model |
+| `entropy27.py` | measures the real information content of the ternary stream (marginal/conditional entropy of the trits, code shares, file composition) — the measurement behind "~0.42 bits per weight of removable air" |
 | `dump_prism_kv.py` | prints the GGUF metadata, including the `prism.*` keys |
 | `convert_pq2_0_to_tq2_0.py` | shared GGUF codec plus the earlier (rejected) primal-basis converter, kept for the record |
 | `verify_convert.py` | legacy verifier for the earlier path, kept for the record |
